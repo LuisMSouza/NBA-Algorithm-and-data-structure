@@ -6,15 +6,17 @@ public class MergeSort {
             int mid = (initial + last) / 2;
             mergesort(arr, initial, mid);
             mergesort(arr, mid + 1, last);
-            sort();
+            merge(arr, last, mid, mid);
         }
     }
 
-    public void sort() {
-        
+    public void merge(int[] arr, int left, int mid, int right) {
+
     }
 
     public static void main(String[] args) {
+        int[] array = { 1, 45, 64, 56, 43, 25 };
 
+        
     }
 }

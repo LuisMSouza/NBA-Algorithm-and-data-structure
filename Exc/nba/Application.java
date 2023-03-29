@@ -19,12 +19,75 @@ class Jogador {
     Jogador() {
 
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setAltura(int altura) {
+        this.altura = altura;
+    }
+
+    public int getAltura() {
+        return altura;
+    }
+
+    public void setPeso(int peso) {
+        this.peso = peso;
+    }
+
+    public int getPeso() {
+        return peso;
+    }
+
+    public void setAnoNascimento(int ano) {
+        this.anoNascimento = ano;
+    }
+
+    public int getAnoNascimento() {
+        return anoNascimento;
+    }
+
+    public void setUniversidade(String universidade) {
+        this.universidade = universidade;
+    }
+
+    public String getUniversidade() {
+        return universidade;
+    }
+
+    public void setCidadeNascimento(String cidade) {
+        this.cidadeNascimento = cidade;
+    }
+
+    public String getCidadeNascimento() {
+        return cidadeNascimento;
+    }
+
+    public void setEstadoNascimento(String estado) {
+        this.estadoNascimento = estado;
+    }
+
+    public String getEstadoNascimento() {
+        return estadoNascimento;
+    }
+
 }
 
 public class Application {
     public static void main(String[] args) {
-        Jogador jogador;
 
-        jogador = new Jogador();
     }
 }

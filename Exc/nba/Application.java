@@ -4,7 +4,7 @@ class Jogador {
     private int id, altura, peso, anoNascimento;
     private String nome, universidade, cidadeNascimento, estadoNascimento;
 
-    Jogador(int id, String nome, int altura, int peso, int anoNascimento, String universidade, String cidadeNascimento,
+    Jogador(int id, String nome, int altura, int peso, String universidade, int anoNascimento, String cidadeNascimento,
             String estadoNascimento) {
         this.id = id;
         this.altura = altura;
@@ -16,12 +16,7 @@ class Jogador {
         this.estadoNascimento = estadoNascimento;
     }
 
-    Jogador(int id, String nome, int altura, int peso, int anoNascimento) {
-        this.id = id;
-        this.altura = altura;
-        this.peso = peso;
-        this.anoNascimento = anoNascimento;
-        this.nome = nome;
+    Jogador() {
     }
 
     public void ImprimeDados() {
@@ -34,9 +29,9 @@ class Jogador {
         System.out.println(" ## ");
         System.out.println(peso);
         System.out.println(" ## ");
-        System.out.println(anoNascimento);
-        System.out.println(" ## ");
         System.out.println(universidade.isEmpty() ? "nao informado" : universidade);
+        System.out.println(" ## ");
+        System.out.println(anoNascimento);
         System.out.println(" ## ");
         System.out.println(cidadeNascimento.isEmpty() ? "nao informado" : cidadeNascimento);
         System.out.println(" ## ");
@@ -108,10 +103,37 @@ class Jogador {
         return estadoNascimento;
     }
 
+    public void ler() {
+        System.out.println("entre com os dados");
+        Scanner scan = new Scanner(System.in);
+        String entradaDados;
+
+        while (scan.hasNext()) {
+            if ()
+            entradaDados = scan.nextLine();
+            String[] valores = entradaDados.split(",");
+            System.out.println(valores);
+            this.id = Integer.parseInt(valores[0]);
+            this.nome = valores[1];
+            this.altura = Integer.parseInt(valores[2]);
+            this.peso = Integer.parseInt(valores[3]);
+            this.universidade = valores[4].equals("") ? "nao informado" : valores[4];
+            this.anoNascimento = Integer.parseInt(valores[5]);
+            this.cidadeNascimento = valores[6].isEmpty() ? "nao informado" : valores[6];
+            this.estadoNascimento = valores[7].isEmpty() ? "nao informado" : valores[7];
+            ImprimeDados();
+        }
+    }
+
+    public Jogador clone() {
+        return new Jogador(id, nome, altura, peso, universidade, anoNascimento, cidadeNascimento, estadoNascimento);
+    }
+
 }
 
 public class Application {
     public static void main(String[] args) {
-
+        Jogador newJogador = new Jogador();
+        newJogador.ler();
     }
 }

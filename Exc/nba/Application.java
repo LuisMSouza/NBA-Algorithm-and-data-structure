@@ -4,7 +4,7 @@ class Jogador {
     private int id, altura, peso, anoNascimento;
     private String nome, universidade, cidadeNascimento, estadoNascimento;
 
-    Jogador(int id, int altura, int peso, int anoNascimento, String nome, String universidade, String cidadeNascimento,
+    Jogador(int id, String nome, int altura, int peso, int anoNascimento, String universidade, String cidadeNascimento,
             String estadoNascimento) {
         this.id = id;
         this.altura = altura;
@@ -16,20 +16,32 @@ class Jogador {
         this.estadoNascimento = estadoNascimento;
     }
 
-    Jogador() {
-
+    Jogador(int id, String nome, int altura, int peso, int anoNascimento) {
+        this.id = id;
+        this.altura = altura;
+        this.peso = peso;
+        this.anoNascimento = anoNascimento;
+        this.nome = nome;
     }
 
     public void ImprimeDados() {
-        System.out.println("Dados do jogador: \n");
-        System.out.println("ID: " + id);
-        System.out.println("Nome: " + nome);
-        System.out.println("Altura: " + altura);
-        System.out.println("Peso: " + peso);
-        System.out.println("Ano de Nascimento: " + anoNascimento);
-        System.out.println("Cidade de Nascimento: " + cidadeNascimento);
-        System.out.println("Estado de Nascimento: " + estadoNascimento);
-        System.out.println("Universidade: " + universidade);
+        System.out.print("[");
+        System.out.println(id);
+        System.out.println(" ## ");
+        System.out.println(nome);
+        System.out.println(" ## ");
+        System.out.println(altura);
+        System.out.println(" ## ");
+        System.out.println(peso);
+        System.out.println(" ## ");
+        System.out.println(anoNascimento);
+        System.out.println(" ## ");
+        System.out.println(universidade.isEmpty() ? "nao informado" : universidade);
+        System.out.println(" ## ");
+        System.out.println(cidadeNascimento.isEmpty() ? "nao informado" : cidadeNascimento);
+        System.out.println(" ## ");
+        System.out.println(estadoNascimento.isEmpty() ? "nao informado" : estadoNascimento);
+        System.out.println("]");
     }
 
     public void setId(int id) {

@@ -20,6 +20,18 @@ class Jogador {
 
     }
 
+    public void ImprimeDados() {
+        System.out.println("Dados do jogador: \n");
+        System.out.println("ID: " + id);
+        System.out.println("Nome: " + nome);
+        System.out.println("Altura: " + altura);
+        System.out.println("Peso: " + peso);
+        System.out.println("Ano de Nascimento: " + anoNascimento);
+        System.out.println("Cidade de Nascimento: " + cidadeNascimento);
+        System.out.println("Estado de Nascimento: " + estadoNascimento);
+        System.out.println("Universidade: " + universidade);
+    }
+
     public void setId(int id) {
         this.id = id;
     }

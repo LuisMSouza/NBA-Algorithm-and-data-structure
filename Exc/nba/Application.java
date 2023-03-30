@@ -1,8 +1,11 @@
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 class Jogador {
     private int id, altura, peso, anoNascimento;
     private String nome, universidade, cidadeNascimento, estadoNascimento;
+    private ArrayList<Jogador> listJogadores = new ArrayList<>();
 
     Jogador(int id, String nome, int altura, int peso, String universidade, int anoNascimento, String cidadeNascimento,
             String estadoNascimento) {
@@ -17,25 +20,26 @@ class Jogador {
     }
 
     Jogador() {
+
     }
 
     public void ImprimeDados() {
         System.out.print("[");
-        System.out.println(id);
-        System.out.println(" ## ");
-        System.out.println(nome);
-        System.out.println(" ## ");
-        System.out.println(altura);
-        System.out.println(" ## ");
-        System.out.println(peso);
-        System.out.println(" ## ");
-        System.out.println(universidade.isEmpty() ? "nao informado" : universidade);
-        System.out.println(" ## ");
-        System.out.println(anoNascimento);
-        System.out.println(" ## ");
-        System.out.println(cidadeNascimento.isEmpty() ? "nao informado" : cidadeNascimento);
-        System.out.println(" ## ");
-        System.out.println(estadoNascimento.isEmpty() ? "nao informado" : estadoNascimento);
+        System.out.print(id);
+        System.out.print(" ## ");
+        System.out.print(nome);
+        System.out.print(" ## ");
+        System.out.print(altura);
+        System.out.print(" ## ");
+        System.out.print(peso);
+        System.out.print(" ## ");
+        System.out.print(universidade.isEmpty() ? "nao informado" : universidade);
+        System.out.print(" ## ");
+        System.out.print(anoNascimento);
+        System.out.print(" ## ");
+        System.out.print(cidadeNascimento.isEmpty() ? "nao informado" : cidadeNascimento);
+        System.out.print(" ## ");
+        System.out.print(estadoNascimento.isEmpty() ? "nao informado" : estadoNascimento);
         System.out.println("]");
     }
 
@@ -104,24 +108,41 @@ class Jogador {
     }
 
     public void ler() {
-        System.out.println("entre com os dados");
         Scanner scan = new Scanner(System.in);
         String entradaDados;
 
-        while (scan.hasNext()) {
-            if ()
+        while (!scan.nextLine().equals("FIM")) {
             entradaDados = scan.nextLine();
-            String[] valores = entradaDados.split(",");
-            System.out.println(valores);
-            this.id = Integer.parseInt(valores[0]);
-            this.nome = valores[1];
-            this.altura = Integer.parseInt(valores[2]);
-            this.peso = Integer.parseInt(valores[3]);
-            this.universidade = valores[4].equals("") ? "nao informado" : valores[4];
-            this.anoNascimento = Integer.parseInt(valores[5]);
-            this.cidadeNascimento = valores[6].isEmpty() ? "nao informado" : valores[6];
-            this.estadoNascimento = valores[7].isEmpty() ? "nao informado" : valores[7];
-            ImprimeDados();
+            String[] valores = entradaDados.split(",", -1);
+            Jogador jogador = new Jogador();
+            jogador.setId(Integer.parseInt(valores[0]));
+            jogador.setNome(valores[1]);
+            jogador.setAltura(Integer.parseInt(valores[2]));
+            jogador.setPeso(Integer.parseInt(valores[3]));
+            jogador.setUniversidade(valores[4].isEmpty() ? "nao informado" : valores[4]);
+            jogador.setAnoNascimento(Integer.parseInt(valores[5]));
+            jogador.setCidadeNascimento(valores[6].isEmpty() ? "nao informado" : valores[6]);
+            jogador.setEstadoNascimento(valores[7].isEmpty() ? "nao informado" : valores[7]);
+            listJogadores.add(jogador);
+        }
+        escrever();
+    }
+
+    public void escrever() {
+        Scanner scan = new Scanner(System.in);
+        int numDados;
+
+        numDados = scan.nextInt();
+        for (int i = 0; i <= numDados; i++) {
+            int jogadorId = scan.nextInt();
+            getJogador(jogadorId);
+        }
+    }
+
+    public void getJogador(int idJogador) {
+        for (Jogador jogador : listJogadores) {
+            if (jogador.getId() == idJogador) jogador.ImprimeDados();
+            break;
         }
     }
 

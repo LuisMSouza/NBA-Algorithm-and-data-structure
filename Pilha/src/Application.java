@@ -149,33 +149,6 @@ class Jogador {
 
 }
 
-class Fila {
-    private Jogador[] fila;
-    private int tras, frente, tamanho;
-
-    Fila(int tamanho) {
-        fila = new Jogador[tamanho];
-        frente = 0;
-        tras = 0;
-        this.tamanho = tamanho;
-    }
-
-    Fila() {
-        int[] vetor;
-
-        fila = vetor[5];
-    }
-
-    public void enfileirar(Jogador jogador) {
-        
-    }
-
-    public Jogador desenfileirar() {
-
-        return 
-    }
-}
-
 public class Application {
     public static void main(String[] args) {
         Jogador newJogador = new Jogador();

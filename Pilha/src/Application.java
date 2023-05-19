@@ -149,6 +149,10 @@ class Jogador {
 
 }
 
+class Pilha {
+    
+}
+
 public class Application {
     public static void main(String[] args) {
         Jogador newJogador = new Jogador();

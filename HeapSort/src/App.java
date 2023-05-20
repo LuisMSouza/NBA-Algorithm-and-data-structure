@@ -1,14 +1,15 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
-class Jogador {
+class Jogador implements Comparable<Jogador> {
     private int id, altura, peso, anoNascimento;
     private String nome, universidade, cidadeNascimento, estadoNascimento;
-    private ArrayList<Jogador> listJogadores = new ArrayList<>();
-    Scanner scan = new Scanner(System.in);
 
-    Jogador(int id, String nome, int altura, int peso, String universidade, int anoNascimento, String cidadeNascimento,
-            String estadoNascimento) {
+    Jogador(int id, String nome, int altura, int peso, String universidade, int anoNascimento,
+            String cidadeNascimento, String estadoNascimento) {
         this.id = id;
         this.altura = altura;
         this.peso = peso;
@@ -19,139 +20,139 @@ class Jogador {
         this.estadoNascimento = estadoNascimento;
     }
 
-    Jogador() {
-
+    public void imprimirDados() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[")
+                .append(id).append(" ## ")
+                .append(nome).append(" ## ")
+                .append(altura).append(" ## ")
+                .append(peso).append(" ## ")
+                .append(anoNascimento).append(" ## ")
+                .append(campoNaoInformado(universidade)).append(" ## ")
+                .append(campoNaoInformado(cidadeNascimento)).append(" ## ")
+                .append(campoNaoInformado(estadoNascimento))
+                .append("]\n");
+        System.out.print(sb.toString());
     }
 
-    public void ImprimeDados() {
-        System.out.print("[");
-        System.out.print(id);
-        System.out.print(" ## ");
-        System.out.print(nome);
-        System.out.print(" ## ");
-        System.out.print(altura);
-        System.out.print(" ## ");
-        System.out.print(peso);
-        System.out.print(" ## ");
-        System.out.print(anoNascimento);
-        System.out.print(" ## ");
-        System.out.print(universidade.isEmpty() ? "nao informado" : universidade);
-        System.out.print(" ## ");
-        System.out.print(cidadeNascimento.isEmpty() ? "nao informado" : cidadeNascimento);
-        System.out.print(" ## ");
-        System.out.print(estadoNascimento.isEmpty() ? "nao informado" : estadoNascimento);
-        System.out.println("]");
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    private String campoNaoInformado(String campo) {
+        return campo.isEmpty() ? "nao informado" : campo;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setAltura(int altura) {
-        this.altura = altura;
-    }
-
-    public int getAltura() {
-        return altura;
-    }
-
-    public void setPeso(int peso) {
-        this.peso = peso;
-    }
-
-    public int getPeso() {
-        return peso;
-    }
-
-    public void setAnoNascimento(int ano) {
-        this.anoNascimento = ano;
-    }
-
-    public int getAnoNascimento() {
-        return anoNascimento;
-    }
-
-    public void setUniversidade(String universidade) {
-        this.universidade = universidade;
-    }
-
-    public String getUniversidade() {
-        return universidade;
-    }
-
-    public void setCidadeNascimento(String cidade) {
-        this.cidadeNascimento = cidade;
-    }
-
-    public String getCidadeNascimento() {
-        return cidadeNascimento;
-    }
-
-    public void setEstadoNascimento(String estado) {
-        this.estadoNascimento = estado;
-    }
-
-    public String getEstadoNascimento() {
-        return estadoNascimento;
-    }
-
-    public void ler() {
-        String entradaDados;
-        entradaDados = scan.nextLine();
-        while (!entradaDados.equals("FIM")) {
-            String[] valores = entradaDados.split(",", -1);
-            Jogador jogador = new Jogador();
-            jogador.setId(Integer.parseInt(valores[0]));
-            jogador.setNome(valores[1]);
-            jogador.setAltura(Integer.parseInt(valores[2]));
-            jogador.setPeso(Integer.parseInt(valores[3]));
-            jogador.setUniversidade(valores[4].isEmpty() ? "nao informado" : valores[4]);
-            jogador.setAnoNascimento(Integer.parseInt(valores[5]));
-            jogador.setCidadeNascimento(valores[6].isEmpty() ? "nao informado" : valores[6]);
-            jogador.setEstadoNascimento(valores[7].isEmpty() ? "nao informado" : valores[7]);
-            listJogadores.add(jogador);
-            entradaDados = scan.nextLine();
+    public int compareTo(Jogador outro) {
+        if (this.altura != outro.altura) {
+            return Integer.compare(this.altura, outro.altura);
         }
-        escrever();
+        return this.nome.compareTo(outro.nome);
+    }
+}
+
+class App {
+    public static void heapSort(Jogador[] jogadores, int[] comparacoes, int[] movimentacoes) {
+        int n = jogadores.length;
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(jogadores, n, i, comparacoes, movimentacoes);
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            movimentacoes[0]++;
+            Jogador temp = jogadores[0];
+            jogadores[0] = jogadores[i];
+            jogadores[i] = temp;
+
+            heapify(jogadores, i, 0, comparacoes, movimentacoes);
+        }
     }
 
-    public void escrever() {
-        int idCount = Integer.parseInt(scan.nextLine());
+    public static void heapify(Jogador[] jogadores, int n, int i, int[] comparacoes, int[] movimentacoes) {
+        int largest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
 
-        for (int i = 0; i <= idCount - 1; i++) {
-            if (!scan.hasNext())
-                break;
-            int jogadorId = Integer.parseInt(scan.nextLine());
-            for (Jogador jogadorTemp : listJogadores) {
-                if (jogadorTemp.getId() == jogadorId) {
-                    jogadorTemp.ImprimeDados();
+        if (left < n) {
+            comparacoes[0]++;
+            if (jogadores[left].compareTo(jogadores[largest]) > 0) {
+                largest = left;
+            }
+        }
+
+        if (right < n) {
+            comparacoes[0]++;
+            if (jogadores[right].compareTo(jogadores[largest]) > 0) {
+                largest = right;
+            }
+        }
+
+        if (largest != i) {
+            movimentacoes[0]++;
+            Jogador swap = jogadores[i];
+            jogadores[i] = jogadores[largest];
+            jogadores[largest] = swap;
+
+            heapify(jogadores, n, largest, comparacoes, movimentacoes);
+        }
+    }
+
+    public static void main(String[] args) {
+        ArrayList<Jogador> jogadoresList = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("/tmp/jogadores.txt"))) {
+            String linha = br.readLine(); // Descarta a primeira linha
+
+            while ((linha = br.readLine()) != null) {
+                String[] valores = linha.split(",", -1);
+                int id = Integer.parseInt(valores[0]);
+                Jogador jogador = new Jogador(
+                        id,
+                        valores[1],
+                        Integer.parseInt(valores[2]),
+                        Integer.parseInt(valores[3]),
+                        valores[4].isEmpty() ? "nao informado" : valores[4],
+                        valores[5].isEmpty() ? 0 : Integer.parseInt(valores[5]),
+                        valores[6].isEmpty() ? "nao informado" : valores[6],
+                        valores[7].isEmpty() ? "nao informado" : valores[7]
+                );
+                jogadoresList.add(jogador);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Jogador> jogadoresPesquisados = new ArrayList<>();
+        String linha = MyIO.readLine();
+        while (!linha.isEmpty() && !linha.equals("FIM")) {
+            int id = Integer.parseInt(linha);
+            for (Jogador jogador : jogadoresList) {
+                if (jogador.getId() == id) {
+                    jogadoresPesquisados.add(jogador);
                     break;
                 }
             }
+            linha = MyIO.readLine();
         }
-    }
 
-    public Jogador clone() {
-        return new Jogador(id, nome, altura, peso, universidade, anoNascimento, cidadeNascimento, estadoNascimento);
-    }
+        Jogador[] jogadores = jogadoresPesquisados.toArray(new Jogador[0]);
+        int n = jogadores.length;
 
-}
+        int[] comparacoes = {0};
+        int[] movimentacoes = {0};
+        long inicio = System.currentTimeMillis();
+        heapSort(jogadores, comparacoes, movimentacoes);
+        long fim = System.currentTimeMillis();
 
-public class App {
-    public static void main(String[] args) {
-        Jogador newJogador = new Jogador();
-        newJogador.ler();
+        for (Jogador jogador : jogadores) {
+            jogador.imprimirDados();
+        }
+
+        try (FileWriter fw = new FileWriter("788315_heapsort.txt")) {
+            fw.write("788315\t" + (fim - inicio) + "ms\t" + comparacoes[0] + "\t" + movimentacoes[0] + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

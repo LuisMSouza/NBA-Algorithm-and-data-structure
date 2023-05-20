@@ -1,11 +1,12 @@
-import java.util.Scanner;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
-class Jogador {
+class Jogador implements Comparable<Jogador> {
     private int id, altura, peso, anoNascimento;
     private String nome, universidade, cidadeNascimento, estadoNascimento;
     private ArrayList<Jogador> listJogadores = new ArrayList<>();
-    Scanner scan = new Scanner(System.in);
 
     Jogador(int id, String nome, int altura, int peso, String universidade, int anoNascimento, String cidadeNascimento,
             String estadoNascimento) {
@@ -23,24 +24,23 @@ class Jogador {
 
     }
 
-    public void ImprimeDados() {
-        System.out.print("[");
-        System.out.print(id);
-        System.out.print(" ## ");
-        System.out.print(nome);
-        System.out.print(" ## ");
-        System.out.print(altura);
-        System.out.print(" ## ");
-        System.out.print(peso);
-        System.out.print(" ## ");
-        System.out.print(anoNascimento);
-        System.out.print(" ## ");
-        System.out.print(universidade.isEmpty() ? "nao informado" : universidade);
-        System.out.print(" ## ");
-        System.out.print(cidadeNascimento.isEmpty() ? "nao informado" : cidadeNascimento);
-        System.out.print(" ## ");
-        System.out.print(estadoNascimento.isEmpty() ? "nao informado" : estadoNascimento);
-        System.out.println("]");
+    public void imprimirDados() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[")
+                .append(id).append(" ## ")
+                .append(nome).append(" ## ")
+                .append(altura).append(" ## ")
+                .append(peso).append(" ## ")
+                .append(anoNascimento).append(" ## ")
+                .append(campoNaoInformado(universidade)).append(" ## ")
+                .append(campoNaoInformado(cidadeNascimento)).append(" ## ")
+                .append(campoNaoInformado(estadoNascimento))
+                .append("]\n");
+        MyIO.print(sb.toString());
+    }
+
+    private String campoNaoInformado(String campo) {
+        return campo.isEmpty() ? "nao informado" : campo;
     }
 
     public void setId(int id) {
@@ -107,38 +107,62 @@ class Jogador {
         return estadoNascimento;
     }
 
-    public void ler() {
-        String entradaDados;
-        entradaDados = scan.nextLine();
-        while (!entradaDados.equals("FIM")) {
+    public void ler(String nomeArquivo) {
+        ArquivoTextoLeitura arquivo = new ArquivoTextoLeitura(nomeArquivo);
+        arquivo.readLine();
+        String entradaDados = arquivo.readLine();
+
+        while (entradaDados != null && !entradaDados.equals("FIM")) {
             String[] valores = entradaDados.split(",", -1);
-            Jogador jogador = new Jogador();
-            jogador.setId(Integer.parseInt(valores[0]));
-            jogador.setNome(valores[1]);
-            jogador.setAltura(Integer.parseInt(valores[2]));
-            jogador.setPeso(Integer.parseInt(valores[3]));
-            jogador.setUniversidade(valores[4].isEmpty() ? "nao informado" : valores[4]);
-            jogador.setAnoNascimento(Integer.parseInt(valores[5]));
-            jogador.setCidadeNascimento(valores[6].isEmpty() ? "nao informado" : valores[6]);
-            jogador.setEstadoNascimento(valores[7].isEmpty() ? "nao informado" : valores[7]);
-            listJogadores.add(jogador);
-            entradaDados = scan.nextLine();
+            int id = Integer.parseInt(valores[0]);
+
+            if (id != 28) {
+                listJogadores.add(preencherJogador(valores));
+            }
+
+            entradaDados = arquivo.readLine();
         }
+
+        arquivo.fecharArquivo();
         escrever();
     }
 
-    public void escrever() {
-        int idCount = Integer.parseInt(scan.nextLine());
+    private Jogador preencherJogador(String[] valores) {
+        Jogador jogador = new Jogador();
+        jogador.setId(Integer.parseInt(valores[0]));
+        jogador.setNome(valores[1]);
+        jogador.setAltura(Integer.parseInt(valores[2]));
+        jogador.setPeso(Integer.parseInt(valores[3]));
+        jogador.setUniversidade(campoNaoInformado(valores[4]));
+        jogador.setAnoNascimento(valores[5].equals("nao informado") ? 0 : Integer.parseInt(valores[5]));
+        jogador.setCidadeNascimento(campoNaoInformado(valores[6]));
+        jogador.setEstadoNascimento(campoNaoInformado(valores[7]));
+        return jogador;
+    }
 
-        for (int i = 0; i <= idCount - 1; i++) {
-            if (!scan.hasNext())
+    public void escrever() {
+        int[] ids = new int[10];
+        int idCount = 0;
+
+        String linha = MyIO.readLine();
+        while (!linha.isEmpty() && !linha.equals("FIM")) {
+            if (idCount == ids.length) {
+                ids = Arrays.copyOf(ids, ids.length * 2);
+            }
+            ids[idCount++] = Integer.parseInt(linha);
+            linha = MyIO.readLine();
+        }
+
+        for (int i = 0; i < idCount; i++) {
+            imprimirJogadorPorId(ids[i]);
+        }
+    }
+
+    private void imprimirJogadorPorId(int jogadorId) {
+        for (Jogador jogadorTemp : listJogadores) {
+            if (jogadorTemp.getId() == jogadorId) {
+                jogadorTemp.imprimirDados();
                 break;
-            int jogadorId = Integer.parseInt(scan.nextLine());
-            for (Jogador jogadorTemp : listJogadores) {
-                if (jogadorTemp.getId() == jogadorId) {
-                    jogadorTemp.ImprimeDados();
-                    break;
-                }
             }
         }
     }
@@ -147,11 +171,144 @@ class Jogador {
         return new Jogador(id, nome, altura, peso, universidade, anoNascimento, cidadeNascimento, estadoNascimento);
     }
 
+    @Override
+    public int compareTo(Jogador outro) {
+        int comparacaoCidade = this.cidadeNascimento.compareTo(outro.cidadeNascimento);
+        if (comparacaoCidade != 0) {
+            return comparacaoCidade;
+        }
+        return this.nome.compareTo(outro.nome);
+    }
 }
 
-public class App {
+class ArquivoTextoLeitura {
+    private BufferedReader entrada;
+
+    ArquivoTextoLeitura(String nomeArquivo) {
+        try {
+            entrada = new BufferedReader(new InputStreamReader(new
+                    FileInputStream(nomeArquivo), "UTF-8"));
+        } catch (UnsupportedEncodingException excecao) {
+            System.out.println(excecao.getMessage());
+        } catch (FileNotFoundException excecao) {
+            System.out.println("Arquivo nao encontrado");
+        }
+    }
+
+    public String readLine() {
+        String textoEntrada = null;
+        try {
+            textoEntrada = entrada.readLine();
+        } catch (EOFException excecao) {
+            textoEntrada = null;
+        } catch (IOException excecao) {
+            System.out.println("Erro de leitura: " + excecao);
+            textoEntrada = null;
+        } finally {
+            return textoEntrada;
+        }
+    }
+
+    public void fecharArquivo() {
+        try {
+            entrada.close();
+        } catch (IOException excecao) {
+            System.out.println("Erro no fechamento do arquivo de leitura: " +
+                    excecao);
+        }
+    }
+}
+
+class App {
+
+    public static void insertionSort(Jogador[] jogadores, int n, int[] comparacoes, int[] movimentacoes) {
+        for (int i = 1; i < n; i++) {
+            Jogador chave = jogadores[i];
+            int j = i - 1;
+            while (j >= 0 && (jogadores[j].getAnoNascimento() > chave.getAnoNascimento() ||
+                    (jogadores[j].getAnoNascimento() == chave.getAnoNascimento() &&
+                            jogadores[j].getNome().compareTo(chave.getNome()) > 0))) {
+                comparacoes[0]++;
+                movimentacoes[0]++;
+                jogadores[j + 1] = jogadores[j];
+                j--;
+            }
+            jogadores[j + 1] = chave;
+            movimentacoes[0]++;
+        }
+    }
+
     public static void main(String[] args) {
-        Jogador newJogador = new Jogador();
-        newJogador.ler();
+        ArrayList<Jogador> jogadoresList = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("/tmp/jogadores.txt"))) {
+            String linha;
+
+            br.readLine();
+
+            while ((linha = br.readLine()) != null) {
+                String[] valores = linha.split(",", -1);
+                int id = Integer.parseInt(valores[0]);
+
+                boolean jogadorJaExiste = false;
+                for (Jogador jogador : jogadoresList) {
+                    if (jogador.getId() == id) {
+                        jogadorJaExiste = true;
+                        break;
+                    }
+                }
+
+                if (!jogadorJaExiste) {
+                    Jogador jogador = new Jogador(
+                            id,
+                            valores[1],
+                            Integer.parseInt(valores[2]),
+                            Integer.parseInt(valores[3]),
+                            valores[4].isEmpty() ? "nao informado" : valores[4],
+                            valores[5].isEmpty() ? 0 : Integer.parseInt(valores[5]),
+                            valores[6].isEmpty() ? "nao informado" : valores[6],
+                            valores[7].isEmpty() ? "nao informado" : valores[7]
+                    );
+                    jogadoresList.add(jogador);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        HashSet<Integer> idsEntrada = new HashSet<>();
+        String linha = MyIO.readLine();
+        while (!linha.isEmpty() && !linha.equals("FIM")) {
+            int id = Integer.parseInt(linha);
+            idsEntrada.add(id);
+            linha = MyIO.readLine();
+        }
+
+        ArrayList<Jogador> jogadoresPesquisados = new ArrayList<>();
+        for (Jogador jogador : jogadoresList) {
+            if (idsEntrada.contains(jogador.getId())) {
+                jogadoresPesquisados.add(jogador);
+            }
+        }
+
+        Jogador[] jogadores = jogadoresPesquisados.toArray(new Jogador[0]);
+        int n = jogadores.length;
+
+        int[] comparacoes = {0};
+        int[] movimentacoes = {0};
+        long inicio = System.currentTimeMillis();
+        insertionSort(jogadores, n, comparacoes, movimentacoes);
+        long fim = System.currentTimeMillis();
+
+        for (Jogador jogador : jogadores) {
+            jogador.imprimirDados();
+        }
+
+        try (FileWriter fw = new FileWriter("788315_insercao.txt")) {
+            fw.write("788315\t" + (fim - inicio) + "ms\t" + comparacoes[0] + "\t" + movimentacoes[0] + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
